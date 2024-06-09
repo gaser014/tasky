@@ -1,22 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:tasky/core/widget/app_input.dart';
+import 'package:tasky/feature/auth/login/bloc.dart';
 
+import '../../../core/logic/get_it.dart';
 import '../../../core/unit/app_assets.dart';
 import '../../../core/unit/app_strings.dart';
 import '../../../core/unit/routes.dart';
 import '../../../core/widget/app_button.dart';
 import '../../../core/widget/app_image.dart';
 
-class LoginView extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
-  final phoneController = TextEditingController();
-  final passwordController = TextEditingController();
+class LoginView extends StatefulWidget {
 
   LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  final formKey = GlobalKey<FormState>();
+
+  final phoneController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+late final LoginBloc bloc ;
+@override
+initState() {
+  bloc = getIt<LoginBloc>();
+  super.initState();
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,21 +96,37 @@ class LoginView extends StatelessWidget {
           SizedBox(
             height: 24.h,
           ),
-          AppButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()&&phoneController.text.isNotEmpty) {
-                print('Login');
+          BlocConsumer(
+            bloc: bloc,
+            listener: (BuildContext context, state) {
+              if (state is LoginSuccessState) {
                 GoRouter.of(context).go(AppRouter.rOnBoarding);
               }
             },
-            text: DataString.signIn,
-            icon: SizedBox(
-                height: 24.h,
-                width: 24.w,
-                child: const AppImage(
-                  path: DataAssets.arrow,
-                  fit: BoxFit.scaleDown,
-                )),
+            builder: (BuildContext context, state) {
+              return           AppButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()&&phoneController.text.isNotEmpty) {
+                    bloc.add(LoginEvent(
+                      phone: phoneController.text,
+                      password: passwordController.text,
+                    ));
+                    print('Login');
+                    GoRouter.of(context).go(AppRouter.rOnBoarding);
+                  }
+                },
+                isLoading: state is LoginLoadingState,
+                text: DataString.signIn,
+                icon: SizedBox(
+                    height: 24.h,
+                    width: 24.w,
+                    child: const AppImage(
+                      path: DataAssets.arrow,
+                      fit: BoxFit.scaleDown,
+                    )),
+              );
+
+            },
           ),
           SizedBox(
             height: 24.h,

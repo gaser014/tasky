@@ -1,5 +1,37 @@
 
 import 'package:flutter/material.dart';
+import 'package:tasky/core/widget/app_snack_bar.dart';
+final navigatorKey = GlobalKey<NavigatorState>();
+
+
+enum MassageType {
+  success,
+  failed,
+  warning,
+}
+
+enum ProductType {
+  favorite,
+  custom,
+  category,
+}
+
+enum PaymentType { cash, visa, mastercard }
+
+void showMessage({
+  required String message,
+  MassageType type = MassageType.failed,
+}) {
+  debugPrint('message is $message');
+  if (message.isNotEmpty) {
+    backgroundColor: type == MassageType.success?
+        SnackBarApp.success(navigatorKey.currentContext!, text: message):
+        type == MassageType.failed?
+        SnackBarApp(navigatorKey.currentContext!, text: message, text2: ''):
+SnackBarApp.required(navigatorKey.currentContext!, text: message, text2: '');
+
+  }
+}
 
 MaterialColor? primarySwatch() {
   Color color = const Color(0xFF5F33E1);

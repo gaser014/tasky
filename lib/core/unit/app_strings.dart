@@ -20,6 +20,10 @@ class DataString {
   static const String singUp = 'Sign up';
   static const String location = 'Location';
   static const String level = 'level';
+static const String senior = 'senior';
+static const String junior = 'junior';
+static const String fresh = 'fresh';
+static const String midLevel = 'midLevel';
   static const String profile = 'Profile';
 static const String addNewTask = 'Add new task';
 static const String addTask = 'Add task';

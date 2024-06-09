@@ -1,6 +1,7 @@
 
 
 import 'package:go_router/go_router.dart';
+import 'package:tasky/core/logic/helper_methods.dart';
 import 'package:tasky/view/onboarding/view.dart';
 import 'package:tasky/view/splash/view.dart';
 
@@ -13,6 +14,7 @@ abstract class AppRouter {
  static const String rSignUp = '/sing_up';
 
   static final router = GoRouter(
+    navigatorKey: navigatorKey,
     routes: [
       GoRoute(
         path: '/',

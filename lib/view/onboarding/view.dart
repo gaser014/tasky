@@ -36,7 +36,7 @@ SizedBox(
         ),
       ),
       PositionedDirectional(
-        top: 506.h,
+        top: 462.h,
         start: 60.w,
         child: SizedBox(
           width: 256.w,
@@ -45,7 +45,7 @@ SizedBox(
             TextSpan(
               text: DataString.titleOfOnboarding,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xff24252C),
               ),
@@ -53,7 +53,8 @@ SizedBox(
                 TextSpan(
                   text: DataString.subTitleOfOnboarding,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
                     color: const Color(0xff6E6A7C),
                   ),
                 ),
@@ -81,6 +82,9 @@ SizedBox(
                     path: DataAssets.arrow,
                     fit: BoxFit.scaleDown,
                   )),
+            ),
+            SizedBox(
+              height: 32.h,
             ),
           ],
         ));

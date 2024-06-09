@@ -1,17 +1,22 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tasky/core/widget/app_input.dart';
 
+import '../../../core/logic/get_it.dart';
+import '../../../core/logic/helper_methods.dart';
 import '../../../core/unit/app_assets.dart';
 import '../../../core/unit/app_strings.dart';
 import '../../../core/unit/routes.dart';
 import '../../../core/widget/app_button.dart';
 import '../../../core/widget/app_image.dart';
+import '../../../feature/auth/register/bloc.dart';
 
 class SingUpView extends StatefulWidget {
-
   SingUpView({super.key});
+
   @override
   State<SingUpView> createState() => _SingUpViewState();
 }
@@ -19,6 +24,7 @@ class SingUpView extends StatefulWidget {
 class _SingUpViewState extends State<SingUpView> {
   final formKey = GlobalKey<FormState>();
   String? levelOfExperience;
+  late final RegisterBloc bloc;
 
   final phoneController = TextEditingController();
 
@@ -28,10 +34,19 @@ class _SingUpViewState extends State<SingUpView> {
 
   final yearOfExpController = TextEditingController();
 
-  final levelOfExpController = TextEditingController();
 
   final passwordController = TextEditingController();
-
+  final List<String> levelOfExperiences = [
+    DataString.fresh,
+    DataString.junior,
+    DataString.midLevel,
+    DataString.senior,
+  ];
+@override
+  void initState() {
+    bloc = getIt<RegisterBloc>();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +55,7 @@ class _SingUpViewState extends State<SingUpView> {
       child: ListView(
         children: [
           SizedBox(
-            height: 360.h,
+            height: 343.h,
             width: double.infinity,
             child: Stack(
               children: [
@@ -56,7 +71,7 @@ class _SingUpViewState extends State<SingUpView> {
                   ),
                 ),
                 PositionedDirectional(
-                  top: 232.h,
+                  top: 200.h,
                   width: 1.sw,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +93,12 @@ class _SingUpViewState extends State<SingUpView> {
                       AppInput(
                         label: DataString.name,
                         validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return DataString.empty(DataString.name);
+                          }
+                          return null;
                         },
                         controller: nameController,
-
                       ),
                     ],
                   ),
@@ -91,145 +109,100 @@ class _SingUpViewState extends State<SingUpView> {
           CountryPhone(
             phoneController: phoneController,
           ),
-            AppInput(
-              label: DataString.yearsOfExperience,
-              validator: (value) {
-              },
-              controller: yearOfExpController,
-
-            ),
-SizedBox(
-    height: 24.h,
-)
-,
+          AppInput(
+            label: DataString.yearsOfExperience,
+            validator: (value) {
+              if (value == null || value.isEmpty|| (int.tryParse(value)??0)<0 ){
+                return DataString.empty(DataString.yearsOfExperience);
+              }
+              return null;
+            },
+            controller: yearOfExpController,
+          ),
+          SizedBox(
+            height: 24.h,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: const Color(0xffBABABA).withOpacity(.2),),
+                border: Border.all(
+                  color: const Color(0xffBABABA).withOpacity(.2),
+                ),
               ),
-margin: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
               child: DropdownButton<String>(
                 isExpanded: true,
-                  borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8.r),
                 padding: EdgeInsets.zero,
                 elevation: 0,
                 dropdownColor: Colors.white,
                 underline: Container(),
                 onChanged: (value) {
                   setState(() {
-                 levelOfExperience=
-                    value;
+                    levelOfExperience = value;
                   });
                 },
                 value: levelOfExperience,
-
                 icon: SizedBox(
-                  width: 1.sw-60.w,
+                  width: 1.sw - 60.w,
                   child: Row(
                     children: [
-                      Text(levelOfExperience ?? DataString.levelOfExperience,textAlign: TextAlign.start,style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xff2F2F2F),
-                      ),),
+                      Text(
+                        levelOfExperience ?? DataString.levelOfExperience,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xff2F2F2F),
+                        ),
+                      ),
                       const Spacer(),
-                      Icon(Icons.keyboard_arrow_down_sharp,color: const Color(0xff7F7F7F),size: 24.w,),
+                      Icon(
+                        Icons.keyboard_arrow_down_sharp,
+                        color: const Color(0xff7F7F7F),
+                        size: 24.w,
+                      ),
                     ],
                   ),
                 ),
-                       items:  [
-                DropdownMenuItem(
-                  value: DataString.low,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      children: [
-                        const AppImage(path: DataAssets.flag,fit: BoxFit.scaleDown,
-                          color: Color(0xff0087FF),
-                        ),
-                        SizedBox(width: 4.w,),
-                         Text(DataString.low,textAlign: TextAlign.start,style: TextStyle(
+                items: List.generate(levelOfExperiences.length, (index) {
+                  return DropdownMenuItem(
+                    value: levelOfExperiences[index].toUpperCase(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Text(
+                        levelOfExperiences[index].toUpperCase(),
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xff0087FF),
+                          color: const Color(0xff7F7F7F),
                         ),
-
-                         ),],
+                      ),
                     ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: DataString.medium,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      children: [
-                        const AppImage(path: DataAssets.flag,fit: BoxFit.scaleDown,
-                          color:  Color(0xff5F33E1),
-                        ),
-                        SizedBox(width: 4.w,),
-                        Text(DataString.medium,textAlign: TextAlign.start,style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xff5F33E1),
-                        ),
-
-                        ),],
-                    ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: DataString.high,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Row(
-                      children: [
-                        const AppImage(path: DataAssets.flag,fit: BoxFit.scaleDown,
-                          color: Color(0xfffF7D53),
-                        ),
-                        SizedBox(width: 4.w,),
-                        Text(DataString.high,textAlign: TextAlign.start,style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xfffF7D53),
-                        ),
-
-                        ),],
-                    ),
-                  ),
-                ),
-
-                       ],
+                  );
+                }),
               ),
             ),
           ),
           SizedBox(
             height: 24.h,
-
           ),
           AppInput(
-              label: DataString.levelOfExperience,
-              validator: (value) {
-              },
-              controller: yearOfExpController,
-
-            ),
-SizedBox(
-    height: 24.h,
-)
-,    AppInput(
-              label: DataString.address,
-              validator: (value) {
-              },
-              controller: yearOfExpController,
-
-            ),
-SizedBox(
-    height: 24.h,
-)
-,
+            label: DataString.address,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return DataString.empty(DataString.address);
+              }
+              return null;
+            },
+            controller: addressController,
+          ),
+          SizedBox(
+            height: 24.h,
+          ),
           AppInput(
             label: DataString.password,
             validator: (value) {
@@ -247,21 +220,46 @@ SizedBox(
           SizedBox(
             height: 24.h,
           ),
-          AppButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()&&phoneController.text.isNotEmpty) {
-                print('Login');
+          BlocConsumer(
+            builder: (BuildContext context, state) {
+              return AppButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate() &&
+                      phoneController.text.isNotEmpty&&
+                      levelOfExperience != null
+                  ) {
+                    bloc.add(RegisterEvent(
+                      phone: phoneController.text,
+                      level: levelOfExperience!,
+                      experienceYears:
+                          int.tryParse(yearOfExpController.text) ?? 0,
+                      password: passwordController.text,
+                      address: addressController.text,
+                      displayName: nameController.text,
+                    ));
+
+                  }
+                  else{
+                    showMessage(message: 'Please fill all fields', type: MassageType.warning);
+                }},
+                text: DataString.singUp,
+                icon: SizedBox(
+                    height: 24.h,
+                    width: 24.w,
+                    child: const AppImage(
+                      path: DataAssets.arrow,
+                      fit: BoxFit.scaleDown,
+                    )),
+                isLoading: state is RegisterLoadingState,
+              );
+            },
+            bloc: bloc,
+            listener: (BuildContext context, Object? state) {
+              if (state is RegisterSuccessState) {
                 GoRouter.of(context).go(AppRouter.rOnBoarding);
               }
+
             },
-            text: DataString.singUp,
-            icon: SizedBox(
-                height: 24.h,
-                width: 24.w,
-                child: const AppImage(
-                  path: DataAssets.arrow,
-                  fit: BoxFit.scaleDown,
-                )),
           ),
           SizedBox(
             height: 24.h,
@@ -280,7 +278,9 @@ SizedBox(
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).go(AppRouter.rLogIn);
+                  },
                   child: Text(
                     DataString.signIn,
                     style: TextStyle(
@@ -295,6 +295,9 @@ SizedBox(
                 ),
               ],
             ),
+          ),
+          SizedBox(
+            height: 32.h,
           ),
         ],
       ),
