@@ -1,9 +1,8 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
+import 'package:intl_phone_field/phone_number.dart';
 import '../unit/app_strings.dart';
 import 'app_image.dart';
 
@@ -111,21 +110,30 @@ class _AppInputState extends State<AppInput> {
     );
   }
 }
-class CountryPhone extends StatelessWidget {
-   const CountryPhone({super.key,required this.phoneController});
+class CountryPhone extends StatefulWidget {
+    const CountryPhone({super.key,
+      required this.onChanged,
+   required this.phoneController});
   final TextEditingController? phoneController;
+    final void Function(PhoneNumber)? onChanged;
+  @override
+  State<CountryPhone> createState() => _CountryPhoneState();
+}
 
+class _CountryPhoneState extends State<CountryPhone> {
   @override
   Widget build(BuildContext context) {
     return      Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-      child: IntlPhoneField(
-        controller: phoneController,
+      child:
+      IntlPhoneField(
+        controller: widget.phoneController,
+
         dropdownIcon: Transform.rotate(
             angle: -1.57,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: const Icon(
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
                 Icons.arrow_back_ios_new_outlined,
                 size: 12,
               ),
@@ -154,7 +162,9 @@ class CountryPhone extends StatelessWidget {
         ),
         showCursor: false,
         initialCountryCode: 'EG',
-        onChanged: (phone) {},
+        onChanged: widget.onChanged,
+
+
       ),
     );
   }

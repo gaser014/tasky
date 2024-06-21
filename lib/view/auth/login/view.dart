@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:tasky/core/widget/app_input.dart';
 import 'package:tasky/feature/auth/login/bloc.dart';
 
@@ -14,8 +14,7 @@ import '../../../core/widget/app_button.dart';
 import '../../../core/widget/app_image.dart';
 
 class LoginView extends StatefulWidget {
-
-  LoginView({super.key});
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -27,13 +26,15 @@ class _LoginViewState extends State<LoginView> {
   final phoneController = TextEditingController();
 
   final passwordController = TextEditingController();
+   String? countryCode ;
+  late final LoginBloc bloc;
 
-late final LoginBloc bloc ;
-@override
-initState() {
-  bloc = getIt<LoginBloc>();
-  super.initState();
-}
+  @override
+  initState() {
+    bloc = getIt<LoginBloc>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,8 +78,10 @@ initState() {
           ),
           CountryPhone(
             phoneController: phoneController,
+            onChanged: (PhoneNumber? number) {
+              countryCode = number!.countryCode;
+            },
           ),
-
           AppInput(
             label: DataString.password,
             validator: (value) {
@@ -100,19 +103,19 @@ initState() {
             bloc: bloc,
             listener: (BuildContext context, state) {
               if (state is LoginSuccessState) {
-                GoRouter.of(context).go(AppRouter.rOnBoarding);
+                GoRouter.of(context).go(AppRouter.rHome);
               }
             },
             builder: (BuildContext context, state) {
-              return           AppButton(
+              return AppButton(
                 onPressed: () {
-                  if (formKey.currentState!.validate()&&phoneController.text.isNotEmpty) {
+                  if (formKey.currentState!.validate() &&
+                      phoneController.text.isNotEmpty) {
                     bloc.add(LoginEvent(
-                      phone: phoneController.text,
+                      phone: '$countryCode${phoneController.text}',
                       password: passwordController.text,
                     ));
                     print('Login');
-                    GoRouter.of(context).go(AppRouter.rOnBoarding);
                   }
                 },
                 isLoading: state is LoginLoadingState,
@@ -125,7 +128,6 @@ initState() {
                       fit: BoxFit.scaleDown,
                     )),
               );
-
             },
           ),
           SizedBox(

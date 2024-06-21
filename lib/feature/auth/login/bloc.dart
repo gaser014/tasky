@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/logic/cashed_helper.dart';
 import '../../../core/logic/dio_helper.dart';
 import '../../../core/logic/helper_methods.dart';
 import '../../../core/unit/app_strings.dart';
@@ -25,6 +24,11 @@ class LoginBloc extends Bloc<LoginEvents, LoginStates> {
     //42687539510
 
     if (response.isSuccess) {
+      CachedHelper.saveData(
+          token: response.response!.data['access_token'],
+          id: response.response!.data['_id'],
+          refreshToken: response.response!.data['refresh_token']);
+
       emit(LoginSuccessState(
         message: response.message,
       ));
@@ -32,7 +36,6 @@ class LoginBloc extends Bloc<LoginEvents, LoginStates> {
       emit(LoginFailedState(
         msg: DataString.noAccount,
       ));
-
     }
   }
 }

@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:tasky/core/widget/app_input.dart';
 
 import '../../../core/logic/get_it.dart';
@@ -15,7 +15,7 @@ import '../../../core/widget/app_image.dart';
 import '../../../feature/auth/register/bloc.dart';
 
 class SingUpView extends StatefulWidget {
-  SingUpView({super.key});
+  const SingUpView({super.key});
 
   @override
   State<SingUpView> createState() => _SingUpViewState();
@@ -34,8 +34,8 @@ class _SingUpViewState extends State<SingUpView> {
 
   final yearOfExpController = TextEditingController();
 
-
   final passwordController = TextEditingController();
+    String? countryCode;
   final List<String> levelOfExperiences = [
     DataString.fresh,
     DataString.junior,
@@ -108,6 +108,9 @@ class _SingUpViewState extends State<SingUpView> {
           ),
           CountryPhone(
             phoneController: phoneController,
+onChanged: (PhoneNumber? number) {
+              countryCode = number!.countryCode;
+            },
           ),
           AppInput(
             label: DataString.yearsOfExperience,
@@ -229,7 +232,7 @@ class _SingUpViewState extends State<SingUpView> {
                       levelOfExperience != null
                   ) {
                     bloc.add(RegisterEvent(
-                      phone: phoneController.text,
+                      phone: '$countryCode${phoneController.text}',
                       level: levelOfExperience!,
                       experienceYears:
                           int.tryParse(yearOfExpController.text) ?? 0,
@@ -256,7 +259,7 @@ class _SingUpViewState extends State<SingUpView> {
             bloc: bloc,
             listener: (BuildContext context, Object? state) {
               if (state is RegisterSuccessState) {
-                GoRouter.of(context).go(AppRouter.rOnBoarding);
+                GoRouter.of(context).go(AppRouter.rHome);
               }
 
             },

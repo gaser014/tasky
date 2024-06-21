@@ -15,7 +15,6 @@ class DioHelper {
       bool haveToken = false}) async {
     Map<String, dynamic>? headers = {
       "Accept": "application/json",
-      "Accept-Language": CachedHelper.getCachedLanguageCode()
     };
     if (haveToken) {
       headers.addAll({
@@ -55,7 +54,6 @@ class DioHelper {
       bool haveToken = false}) async {
     Map<String, dynamic>? headers = {
       "Accept": "application/json",
-      "Accept-Language": CachedHelper.getCachedLanguageCode()
     };
     if (haveToken) {
       headers.addAll({
@@ -94,8 +92,7 @@ class DioHelper {
       Map<String, dynamic>? data,
       bool haveToken = false}) async {
     Map<String, dynamic>? headers = {
-      "Accept": "application/json",
-      "Accept-Language": CachedHelper.getCachedLanguageCode()
+      "Content-Type": "application/json",
     };
     if (haveToken) {
       headers.addAll({
@@ -115,7 +112,7 @@ class DioHelper {
       return CustomResponse(
         response: response,
         isSuccess: true,
-        message: response.data['message'] ?? 'Success',
+    message: response.data.toString(),
       );
     } on DioException catch (e) {
       debugPrint('$endPoint is Error ${e.response?.data}');
@@ -134,7 +131,6 @@ class DioHelper {
       bool haveToken = false}) async {
     Map<String, dynamic>? headers = {
       "Accept": "application/json",
-      "Accept-Language": CachedHelper.getCachedLanguageCode()
     };
     if (haveToken) {
       headers.addAll({

@@ -10,13 +10,13 @@ class AppImage extends StatelessWidget {
   final Color? color;
 
   const AppImage({
-    Key? key,
+    super.key,
     required this.path,
     this.width,
     this.height,
     required this.fit,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

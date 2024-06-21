@@ -22,5 +22,6 @@ class DataAssets {
   static const String logout = '${icon}logout.svg';
   static const String profile = '${icon}profile.svg';
   static const String scan = '${icon}scan.svg';
+  static const String edit = '${icon}edit.svg';
 
 }

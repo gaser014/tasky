@@ -5,6 +5,7 @@ import '../logic/helper_methods.dart';
 
 ThemeData getLightTheme() {
   return ThemeData(
+    fontFamily: 'DM Sans',
     primaryColor: const Color(0xFF6200EE),
     shadowColor: const Color(0xFF03DAC6),
     scaffoldBackgroundColor:  Colors.white,

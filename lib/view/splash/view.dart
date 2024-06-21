@@ -9,7 +9,7 @@ import '../../core/widget/app_image.dart';
 
 
 class SplashView extends StatefulWidget {
-  const SplashView({Key? key}) : super(key: key);
+  const SplashView({super.key});
 
   @override
   State<SplashView> createState() => _SplashViewBodyState();

@@ -13,5 +13,6 @@ class LoginEvent extends LoginEvents {
       "phone" : phone,
       "password" : password,
     };
+    print(data);
   }
 }

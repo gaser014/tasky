@@ -5,6 +5,8 @@ class DataString {
   static const String subTitleOfOnboarding = 'This productive tool is designed to help you better manage your task project-wise conveniently!';
   static const String start = "Let’s Start";
   static const String login = "Login";
+  static const String logo = "Logo";
+  static const String myTasks = "My Tasks";
   static const String phoneExample = "123 456-7890";
   static const String password = "Password...";
   static const String signIn = "Sign In";
@@ -33,7 +35,7 @@ static const String taskDescription = 'Task description';
 static const String dueDate = 'Due date';
 static const String enterTaskTitle = 'Enter title here...';
 static const String enterTaskDescription = 'Enter description here...';
-static const String Priority = 'Priority';
+static const String priority = 'Priority';
 static const String medium = 'Medium';
 static const String high = 'High';
 static const String low = 'Low';
@@ -41,7 +43,6 @@ static const String all = 'All';
 static const String inProgress = 'Inprogress';
 static const String waiting = 'Waiting';
 static const String finished = 'Finished';
-static const String myTasks = 'My Tasks';
 static const String edit = 'Edit';
 static const String delete = 'Delete';
 }
